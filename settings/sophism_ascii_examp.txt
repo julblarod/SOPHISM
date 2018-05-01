@@ -1,0 +1,496 @@
+
+;////////////////////////////////
+;File names
+;////////////////////////////////
+
+;verbose option to show plots and info on screen during simulation (0=no)
+talk=1
+;compress fits files when saving. Not possible for the big
+;datacube, readfits isn't able to work with those compressed or
+;in some filesystems
+;(0=n0)
+compress=1
+;Folder where to save modules' results
+saves='../data/results/'
+;Array of filenames from the modules. Change them but don't remove any.
+files=[$
+      'sscene',$
+      'jitscene',$
+      'polscene',$
+      'specscene',$
+      'otfscene',$
+      'pupapscene',$
+      'fpascene',$
+      'accuscene',$
+      'demodscene',$
+      'inverscene',$
+      'comprscene'$
+      ]
+;Output report filename
+freport='../data/report/sophism_report.pdf' 
+;Idl-save settings filename copy
+fsett='../settings/settings_sophism.sav'
+
+
+;////////////////////////////////
+;Global
+;////////////////////////////////
+
+;Modules to run in the simulation
+progctrl=[$
+          'sophism_input',$
+          'sophism_jitter',$
+          'sophism_polmeas',$
+          'sophism_linbo',$
+          'sophism_otf',$
+          'sophism_papo',$
+          'sophism_fpa',$
+          'sophism_accu',$
+          'sophism_demod',$
+          'sophism_inversion',$
+          'sophism_compression',$
+          'sophism_report'$
+           ]   
+
+;Index of module from where to load data (useful when starting with a
+;late module to not re-run everything). -1=no loading; 0=load input files,
+;1=load jittering files,2=load polarization files,3=load etalon files,4=load OTF files,5=load pupil apodization files,6=load detector files,...
+progma=0                  
+;start from a given sample instead of from the first one? (0=no)
+startmed=0
+;number of sample from where to start
+nstart=0
+;S/C velocity (km/s)
+scvel=0.
+;S/C latitude (deg) Not applicable
+sclat=0.
+;S/C-Sun distance (AU)
+scdis=0.28
+;temperature (C) Not used
+temp=20.
+;Acquisition scheme (Fast Polarization or Fast Wavelength). Dummy now
+acqsche='Fast Polarization'
+;Telescope aperture (m)
+telap=0.14
+;Distance HREW-Entrance Pupil (mm)
+dhrew=322.
+;Effective focal length at detector (m)
+flen=4.125
+;Image discarding scheme, i.e. what to discard when waiting for LCVRs
+;and/or etalon (0=only time samples, 1=whole frame, i.e. all the time
+;samples that fall into a frame)
+discar=1
+;Observation sets, to repeat observation scheme several times
+obsset=1
+;Dual-beam mode: 0=no, 1=yes
+dualbeam=0
+
+
+;////////////////////////////////
+;Input
+;////////////////////////////////
+
+;data file name. Wildcards possible. Also, it can be a string array of
+;input files
+datafilo='../data/inverted_profs_139000.fits.gz'    
+;Replicate data to simulate time series when only one input file is
+;used (1=yes)
+dataser=0                         
+;Input data spatial replication
+sscene_mag=2.
+;Resample data to CCD pixel size (1=yes) (parameter in FPA part)
+fparesamp=1
+;Data apodisation (% of image size)
+sscene_apod=0.
+;Spatial dimension of input data (pix)
+sz0=288
+;Spatial sampling of input data (km)
+sssamp0=20.8
+;Original data time sampling (s)
+tsampor=1.
+;Interpolated data t sampling (s)
+tsamp=0.02
+;Number of points of original wavelength dimension
+wavepointor=496
+;Central wavelength
+wl=6173.341d0
+;lande factor
+geff=2.5
+;Wavelength sampling (mA)
+wavesamp=14.127
+;Subset of wavelength dimension. Options: Complete (original, e.g.,992=+-7AA), Subset (original/2, e.g.,496=+-3.5AA), Minimal (original/4, e.g.,248=+-1.75AA)
+subset='Complete'
+
+
+;////////////////////////////////
+;Jittering
+;////////////////////////////////
+
+;Jitter offset (arcsec)
+jitoffset=[0,0]
+;Jitter rms (arcsec)
+jitrms=0.5
+;Jitter generation type: white noise, randomn
+jittype='white noise'
+;Jitter frequency power spectrum filter. Options: Hinode curve; cutout frequencies; cutoff; levels
+filtype='Hinode'
+;Re-normalize rms after filter (1=yes)
+filrms=1
+;Low cut out frequency for Hinode filtering (Hz)
+filcuth=0.1
+;Cut out frequency 1 (Hz)
+filcut1=0.
+;Cut out frequency 2 (Hz)
+filcut2=10.
+;Cutoff frequency (Hz)
+filcutoff=10.
+;Filter levels 
+fillevel=[2.]
+;Levels ranges (Hz) 
+filrange=[0.,10.]
+;Smooth 
+filsmooth=0
+
+;0 --> ISS disabled, 1 --> ISS enabled
+isson=1
+;Performance of ISS (%) (20 ms should have a 50%, due to sampling limitations).
+issunder=50.
+;ISS type. Only KIS available right now
+issatten='kis'
+;ISS curve to be loaded (not yet)
+issattf='../data/'
+
+
+;////////////////////////////////
+;Transmittances
+;////////////////////////////////
+
+;total of incoming light transmitted through the system
+transsys=0.075
+
+
+;////////////////////////////////
+;Optics
+;////////////////////////////////
+
+;OTF Type. Options: diffraction; zemax (would load zemax input file, when ready)
+otftype='diffraction'
+;normalize wavefront to given frontrms (1=yes)
+frontnorm=1
+;wavefront rms normalization (lambda)
+frontrms=0.1
+;Defocus term in zerco variable will be a zernike coefficient (defocopt=0) or a displacement of focal plane in mm (defocopt=1)
+defocopt=0
+;Zernike coefficients for aberrations (rad)
+zerco=[$   
+       0.,$            ;Defocus
+       0.,0.,$         ;Astigmatism
+       0.,0.,$         ;Coma
+       0.,0.,$
+       0.]             ;spherical
+;load external file with zernike coefficients (1=yes)
+zercoload=1
+;filename of zernikes to be loaded
+zercofile='../data/WFE_plus_window_hotcase_Oct2013_newnewversion.txt'
+
+
+;////////////////////////////////
+;Prefilter
+;////////////////////////////////
+
+;Prefilter peak wavelength (A)
+pfwl=6173.34
+;Prefilter FWHM (A)
+pfhwb=3.
+;Number of cavities
+ncav1=2
+;Fixed or tunable prefilter (only fixed ready)
+fixed_pf='fixed'
+;Prefilter curve to be loaded (0=no) in idl-save format. Not
+;completely ready
+pfload=0
+pfcurve='../data/PF12_20141112_000800_809ed.txt'
+;FOV variation of prefilter (1=yes)
+pffov=1
+;maximum prefilter wavelength shift across FOV (mAA; signed)
+pffovmax=-1600.
+
+
+;////////////////////////////////
+;Etalon
+;////////////////////////////////
+
+;Etalon temperature (Celsius)
+etal_temp=20.
+;Input mode: 0=voltages,1=wavelength positions
+wavevolt=1
+;Applied Voltages (V)
+voltarr=[-500.,500]
+;Wavelength positions respect to line (mA)
+wavearr=[-400.,-160.,-80.,0.,80.,160.]
+;introduce a random error in voltage applied for wavelength
+;tuning ('tuning jittering') with a given rms. (0=not applied)
+voltjit=0
+voltjitrms=1.5
+;Etalon thickness (micron)
+spectsizd=257.
+;Etalon thickness rms (wl/rms). Not used now.
+spectsizdrms=0.
+;Etalon fabrication finesse
+fabfin=200
+;Reflectivity
+refl=0.925
+;Reflectivity rms (%). Not used now.
+reflrms=0.
+;F number
+frat=56.5
+;Etalon incidence angle (deg)
+tilt=0.
+;Enable discarding images during etalon changes (1=yes)
+discaretal=0
+;Etalon speed for selecting wavelengths (V/s)
+tvolt=1500.
+
+
+;////////////////////////////////
+;Pupil Apodisation
+;////////////////////////////////
+
+;Integration range over the spectrum, from -intrange to +intrange (mA)
+intrange=3200.                    
+;Include phase transmission through etalon (0=no, 1=yes)
+phases=1
+
+
+;////////////////////////////////
+;Polarisation
+;////////////////////////////////
+
+;PMP temperature (C). Now, only dummy.
+pol_temp=20.
+;Modulation type. Options: basic,i.e., longitudinal; ideal; real (retardances, orientations,...)
+modtype='vector. ideal'
+;Demodulation 'type'. Options: basic; correlation for a software
+;on-the-fly correlation when accumulating. Not used now.
+;moddmod_type='basic'
+;Demodulated image buffers. Not much used now. Mostly used to indicate
+;size of Stokes dimension and files needed (no polarisation=only 1 in here)
+;Maybe useful in the future for a 'longitudinal' mode: I, V
+modnbuff=4.
+;Stokes parameter for longitudinal modulation type
+modspar='V'
+;Cross-correlation clipping (demod: correl)
+modclip=0.
+;Mueller matrix of optical components. Options: Identity, No errors, Errors. Still in construction
+mueller='Identity'
+;Introduce random errors in Mueller matrix by simulating an optical element
+muellerrors=[0,0,0]
+;minimum and maximum errors in amplitude ratio, retardance and
+;orientation angle. Signs will be calculated randomly (except for
+;amplitude ratio which will always be a decrease from 1)
+muellerramp1=0.05
+muellerramp2=0.1
+muellerrpha1=5.
+muellerrpha2=10.
+muellerrang1=10.
+muellerrang2=20.
+;axis orientation angles for the LCVRs
+retang1=0
+retang2=45
+retdeg1=[225.,225.,315.,315.]
+retdeg2=[235.,125.,55.,305.]
+;Introduce random errors (0=no errors, 1=errors) in LCVRs parameters: amplitude ratio, retardance, orientation, in that order
+reterrors=[0,0,0]
+;minimum and maximum errors to be added to LCVRS parameters in
+;amplitude ratio, retardance and orientation angle. Signs will be
+;calculated randomly (except for amplitude ratio which will always be
+;a decrease from 1)
+reterramp1=0.05
+reterramp2=0.1
+reterrpha1=5.
+reterrpha2=10.
+reterrang1=10.
+reterrang2=20.
+;times of LCVR state changes, i.e. 'latence time' (ms)
+tdeath1=5
+tdeath2=94
+tdeath3=94
+tdeath4=80
+;Number of modulation cycle repetitions
+cycrep=1
+;ad-hoc cross-talk correction option (0=no)
+adhoc=0
+;Re-order Stokes parameters (1=from I,V,Q,U to I,Q,U,V)
+stokreorder=1
+
+;Include birefringence from HREW ('None', 'Generate', 'Load')
+birefsel='None'
+;if 'Load', input save file with birefringence matrix
+birefloadname='biref_mat.sav'
+;different models for the variation of the retardance. 0=defocus, 1=...
+birefvarmodel=5
+;peak to valley for the defocus retardance from the HREW [rad]
+birefptv=0.19
+;scale factor to reduce spatial size in order to speed calculations
+birefscale=32.
+;to reduce calculation time, load birefingence model instead of calculating everything
+birefloadmodel=0
+;save file of the birefringence model
+birefloadmodelname='biref_model_test.sav'
+
+
+;////////////////////////////////
+;Focal Plane
+;////////////////////////////////
+
+;Detectors temperature (C)
+fpa_temp=20.
+;saturation value (for hot pixels, cosmic rays,...)
+fpasatval=65535.
+;include a factor to convert data to flux for photon conversion (1=yes)
+fpafluxconv=0
+;factor for the data-flux conversion
+fpafluxfactor=3e14
+;Exposure time (ms)
+etim=20.
+;time for readout of each 'frame' (ms)
+routtim=100.
+;Detector type: snapshot, rolling
+fpashutt='rolling'
+;Quantum efficiency
+fpaquan=0.5
+;Full well (scale 0--1)
+fpawell=0.5
+;Add photon noise ('Generate','Load' or 'None)
+fpaphotnoi='Generate'
+;load filename of photon noise
+fpaphotnoiname='../data/results/fpascene_phot.sav'
+;Plate scale (arcsec/pix)
+fpaplate=0.5
+;Readout noise type. Options: only normal now
+noitype='normal'
+;Readout noise sigma
+noisigma=70
+;Number of dead pixels (intensity value set to 0) in CCD
+fpadeadpix=0
+;Number of hot pixels (intensity value set to saturation) in CCD
+fpahotpix=0
+;Include cosmic rays generation? (0=no)
+cosmic=0
+;Number of cosmic rays hits per second (based on pixel size and CCD size)
+cosmhit=16.8
+;Introduce dark current on the detector images. Use 'Load' for loading a
+;dark, 'Generate' for generating a random dark or 'None' to not include
+;dark at all
+fpadarksel='Generate'
+;Dark filename for loading
+fpadarkname='../data/results/fpascene.sav'
+;Gain table load/generation (uses same filename as darks)
+fpagainsel='Generate'
+;Gain table load filename
+fpagainname='../data/results/fpascene.sav'
+;Gain table rms
+fpagain=0.01
+;Introduce a flat on the detector images. Use 'Load' for loading a
+;flat, 'Generate' for generating a random flat or 'None' to not include
+;flats at all
+fpaflatsel='None'
+;Filename of the flat to be loaded
+fpaflatname='../data/results/flat.sav'
+;Generate different flats for each wavelength and/or for each
+;polarization state (0=no; first index for wavelengths, second for
+;polarizations). Only for 'Generate' flat case
+fpaflatmore=[1,1]
+;Range of intensity gradient of the flat. Only for 'Generate' flat case 
+fpaflrang=0.05
+;Introduce interference fringes in the data
+fpafring=0
+;These four settings below from the previous fringes calculation
+;Amplitude of fringes
+;fpafringamp=1.
+;Direction of fringes (0 is vertical)
+;fpafringdir=0.
+;Width of fringes (pi units)
+;fpafringwidth=1.
+;Introduce random shift in fringes for: time, lambda, polarization (1=yes)
+;fpafringtime=[1,0,0]
+;Refractive index of 'fringing' element
+fpafrinn=0.
+;Reflectivity of 'fringing' element
+fpafrinref=0.3
+;Thickness of 'fringing' element
+fpafrinsizd=200.
+;Incident angle on 'fringing' element
+fpafrintheta=0.
+
+
+;////////////////////////////////
+;Accumulation
+;////////////////////////////////
+
+;number of accumulations on detector
+nacc=24
+
+
+;////////////////////////////////
+;Inversion
+;////////////////////////////////
+
+;factor for noise threshold
+inversigma=3.
+;maximum number of iterations for inversion code
+iter=15
+;index of continuum position in lambda array
+invercont=0
+;central wavelength of the inversion line
+invercent=6173.34
+;quantum numbers for the lower level of the transition (S,L,J)
+inverquanlow=[2,1,1]
+;quantum numbers for the upper level of the transition (S,L,J)
+inverquanup=[2,2,0]
+;limit the FOV to enter the inversion (0=no)
+inversmall=0
+;initial x,y coordinates for the limited inversion FOV
+inver0=[675,1100]
+;size of limited inversion FOV
+inverfov=[300,300]
+
+
+;////////////////////////////////
+;Compression
+;////////////////////////////////
+
+;simulate hardware compression (1=yes, 0=only software)
+comprhw=0
+;target ratio of compression (1=lossless)
+comprratio=2.
+;bits per pixel (bit depth)
+comprbpp=10
+;blocks per segment (default for software 256; for hardware 32)
+comprbps=256
+;skip possible header bytes in input files before compression
+comprskip=0
+;most significant byte (MSB) first for all input and output files
+;(1=yes). For 0, LSB is used (e.g.: windows systems)
+comprmsb=0
+
+
+;////////////////////////////////
+;Report
+;////////////////////////////////
+
+;modules to be included in the report. Saved data and images must be
+;present from previous runs or the present one
+repoctrl=[$
+         'sophism_input',$
+         'sophism_jitter',$
+         'sophism_polmeas',$
+         'sophism_linbo',$
+         'sophism_otf',$
+         'sophism_papo',$
+         'sophism_fpa',$
+         'sophism_accu',$
+         'sophism_demod',$
+         'sophism_inversion',$
+         'sophism_compression'$
+         ]   
