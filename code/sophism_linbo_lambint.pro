@@ -31,7 +31,6 @@ progind=3
 ;loading settings file
 restore,'../settings/settings_sophism.sav'
 
-
 lll=info.lll
 nwave=info.etalpos
 ;initialize variables

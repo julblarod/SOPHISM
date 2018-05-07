@@ -45,7 +45,7 @@ restore,'../settings/settings_sophism.sav'
 ;define pupil aperture and binary mask
 rd = radius_aper2(tam/2.,rpup,mask)
 ;piensa si tiene sentido dejarlo asi o rd deberia ser 1 en toda la
-;periferia. Por pensar...
+;periferia. Por pensar que no quede...
 
 ;--------------------------------------------------------------------- 
 ; ray incidences on etalon
