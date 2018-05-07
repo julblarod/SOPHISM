@@ -97,14 +97,14 @@ if info.otftype eq 'zemax' then begin
    return
 ;careful! probably not yet correctly implemented.
 ;careful! Fixed wavefront filename. Change
-   header=strarr(16)
-   front=fltarr(64,64)
-;front_tot=fltarr(64,64,9)
-   openr,5,'../PHI_wavefront_0_0.txt'
-   readf,5,header                           
-   readf,5,front
-;front_tot(*,*,ff)=front                               
-   close,5
+;   header=strarr(16)
+;   front=fltarr(64,64)
+;;front_tot=fltarr(64,64,9)
+;   openr,5,'../PHI_wavefront_0_0.txt'
+;   readf,5,header                           
+;   readf,5,front
+;;front_tot(*,*,ff)=front                               
+;   close,5
 ; stop
 ;??????
 ;  if (info.frontrms ne 1.) then begin
@@ -122,9 +122,7 @@ endif
 ; ------------------------------------------------------------------------------
 ; PRE-CALCULATED OTF
 ; ------------------------------------------------------------------------------
-;just to use Johann's calculated OTFs, one for spectral position
-;Wrong. Not valid for that since they came from specific wavelengths
-;But maybe useful in the future...
+;maybe useful in the future...
 ;if info.otfspar.type eq 'load' then begin
 ;if (info.talk eq 1) then print,'Pre-calculated'
 ;restore,'polychromatic_psf_mtf.sav'

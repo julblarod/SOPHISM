@@ -149,8 +149,8 @@ reterr4=ret2[1]*reterr
 reterr5=ret2[2]*reterr
 reterr6=ret2[3]*reterr
 
-rett1=[retar1(0)+reterr1,retar1(1)+reterr1,retar1(2)+reterr2,retar1(3)+reterr2];[info.retdeg1(0)+reterr1,info.retdeg1(1)+reterr1,info.retdeg1(2)+reterr2,info.retdeg1(3)+reterr2]
-rett2=[retar2(0)+reterr3,retar2(1)+reterr4,retar2(2)+reterr5,retar2(3)+reterr6];[info.retdeg2(0)+reterr3,info.retdeg2(1)+reterr4,info.retdeg2(2)+reterr5,info.retdeg2(3)+reterr6]
+rett1=[retar1(0)+reterr1,retar1(1)+reterr1,retar1(2)+reterr2,retar1(3)+reterr2]
+rett2=[retar2(0)+reterr3,retar2(1)+reterr4,retar2(2)+reterr5,retar2(3)+reterr6]
 
 		; mod. state 1 
 		lcvr1=transpose(device(amr=1.-lcvr1amperr(0),pha=rett1(0)+lcvr1phaerr(0),ang=ang1+lcvr1angerr(0)))

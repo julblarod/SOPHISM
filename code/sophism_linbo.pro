@@ -83,14 +83,7 @@ if (info.dataser eq 0) then ntim=1
 
 ;renaming variables from settings file. Mostly useless, should be removed
 sizd=info.spectsizd
-;couple of lines thinking in having a thickness map and being able to
-;load it. Future maybe.
-;if (info.sizmap eq 1) then begin
-;sizd=fltarr(128,128)
-;openr,10,info.sizmapfil
-;readu,10,sizd
-;close,10
-;endif
+
 refl=info.refl
 fabfin=info.fabfin
 volt=info.voltarr
