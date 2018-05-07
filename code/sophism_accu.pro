@@ -298,7 +298,7 @@ else writefits,info.saves+info.files(progind)+'_'+strtrim(obs,2)+'.fits',dmodbuf
 ; can be read to next states but dmodbuff kept in its dimensions
             kd=k mod (sz[1]/info.obsset)
      
-;oookeeeey.Esto tiene sentido en caso de N repeticiones para una misma
+;oookeeey.Esto tiene sentido en caso de N repeticiones para una misma
 ;longitud de onda (x ejemplo) del ciclo de modulacion.La diferencia de
 ;Juanjo entre nA y N.
             dmodbuff[kd,j,*,*] =dmodbuff[kd,j,*,*]+ a
