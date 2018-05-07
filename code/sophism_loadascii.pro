@@ -256,7 +256,6 @@ endif
 ndeaths=fltarr(n_elements(ndeathlcvr),n_elements(ndeathetal))
 for nlam=0,n_elements(ndeathetal)-1 do begin
    ndelcet=ndeathlcvr[n_elements(ndeathlcvr)-1] > ndeathetal[nlam]
-;   ndeaths[*,nlam]=[ndeathlcvr[0:n_elements(ndeathlcvr)-2],ndelcet]
    if (n_elements(ndeathlcvr) gt 1) then ndeaths[*,nlam]=[ndeathlcvr[0:n_elements(ndeathlcvr)-2],ndelcet] else ndeaths[*,nlam]=[ndelcet]
 endfor 
 

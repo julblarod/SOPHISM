@@ -181,12 +181,6 @@ for obs=0,info.obsset-1 do begin
       demodima2=ima*0.
 ;demodulation in loop form
 ;      for j=0,info.modnbuff-1 do for i=0,info.modnbuff-1 do demodima2(*,j,*,*)=demodima2(*,j,*,*)+dmodm2(i,j)*ima(*,i,*,*)
-;if random errors were introduced in the modulation, perform a second
-;demodulation with the theoretical (wrong) demodulation matrix
-;      if (max(info.reterrors) eq 1 OR max(info.muellerrors) eq 1) then begin
-;         demodima_teo2=ima*0.
-;         for j=0,info.modnbuff-1 do for i=0,info.modnbuff-1 do demodima_teo2(*,j,*,*)=demodima_teo2(*,j,*,*)+dmodm_teo2(i,j)*ima(*,i,*,*)
-;      endif
       
       if (info.cycrep gt 1) then begin
          sizei=size(ima)

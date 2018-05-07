@@ -51,12 +51,6 @@ print,''
 restore,'../settings/settings_sophism.sav'
 ;should check if there is demodulated data before going into work?
 
-;now, only working for 6 wavelengths
-;if (info.etalpos ne 6) then begin
-;   print,'Right now, only working with 6 wavelengths, sorry'
-;   goto,noinv
-;endif
-;I think now it works for different lambda arrays
 
 ;define the first part of the input and output filenames because later
 ;the current folder will change and it may cause problems
@@ -144,11 +138,9 @@ for obs=0,info.obsset-1 do begin
    vlos=strength
 
 ;input fits file from demodulation
-;file=info.saves+info.files(progind-1)+'_'+strtrim(fix(ntim),2)+'.fits*'
 ;   file=info.saves+info.files(progind-1)+'_'+strtrim(obs,2)+'.fits*'
    file=filepref+'_'+strtrim(obs,2)+'.fits*'
 ;output filename
-;fileout=info.saves+info.files(progind)+'_'+strtrim(fix(ntim),2)
 ;   fileout=info.saves+info.files(progind)+'_'+strtrim(obs,2)
    fileout=fileoutpref+'_'+strtrim(obs,2)
    ima=readfits(file,/comp,/sil)
@@ -258,18 +250,12 @@ if (max(info.reterrors) eq 1 OR max(info.muellerrors) eq 1) then begin
       eta0=strength
 
 ;input fits file from demodulation
-;   file=info.saves+info.files(progind-1)+'_teo_'+strtrim(fix(ntim),2)+'.fits*'
 ;      file=info.saves+info.files(progind-1)+'_teo_'+strtrim(obs,2)+'.fits*'
       file=filepref+'_teo_'+strtrim(obs,2)+'.fits*'
 ;output filename
-;   fileout=info.saves+info.files(progind)+'_teo_'+strtrim(fix(ntim),2)
 ;      fileout=info.saves+info.files(progind)+'_teo_'+strtrim(obs,2)
       fileout=fileoutpref+'_teo_'+strtrim(obs,2)
-;call the procedure classical
-;   sophism_inversion_classical,file,lambda,lambda0,contind,geff,sigmaTh,fileout
-;      sophism_inversion_classical,file,deltalam,lambda0,contind,geff,sigmaTh,fileout
-;call the procedure MILOS_inversion
-;      sophism_inversion_milos,file,deltalam,contind,fwhmet,iteration,sigmaTh,fileout
+
       ima=readfits(file,/comp,/sil)
       cont=mean(ima[info.invercont,0,*,*])
       for xx=0,sizim(3)-1 do begin
@@ -346,10 +332,6 @@ if (info.adhoc eq 1) then begin
 ;output filename
 ;      fileout=info.saves+info.files(progind)+'_xtalk_'+strtrim(obs,2)
       fileout=fileoutpref+'_xtalk_'+strtrim(obs,2)
-;call the procedure classical
-;      sophism_inversion_classical,file,deltalam,lambda0,contind,geff,sigmaTh,fileout
-;call the procedure MILOS_inversion
-;      sophism_inversion_milos,file,deltalam,contind,fwhmet,iteration,sigmaTh,fileout
 
       ima=readfits(file,/comp,/sil)
       cont=mean(ima[info.invercont,0,*,*])
@@ -422,8 +404,6 @@ if (info.adhoc eq 1) then begin
          file=filepref+'_teo_xtalk_'+strtrim(obs,2)+'.fits*'
 ;         fileout=info.saves+info.files(progind)+'_teo_xtalk_'+strtrim(obs,2)
          fileout=fileoutpref+'_teo_xtalk_'+strtrim(obs,2)
-;         sophism_inversion_classical,file,deltalam,lambda0,contind,geff,sigmaTh,fileout
-;         sophism_inversion_milos,file,deltalam,contind,fwhmet,iteration,sigmaTh,fileout
          
          ima=readfits(file,/comp,/sil)
          cont=mean(ima[info.invercont,0,*,*])

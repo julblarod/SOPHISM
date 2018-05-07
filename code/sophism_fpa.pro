@@ -516,7 +516,6 @@ for f=0,ndet-1 do begin
         imout[lam,pol,*,*]=reform(imout[lam,pol,*,*])*reform(flat[lamfl,polfl,*,*])*reform(fring[ffr,lamfr,polfr,*,*])
      endfor 
   endfor
-;stop
 
   ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ; FPA gain table
@@ -526,14 +525,12 @@ for f=0,ndet-1 do begin
      for pol=0,sizy[2]-1 do imout[lam,pol,*,*]=imout[lam,pol,*,*]*gain_table
   endfor
 
-;stop
   ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ; QExFF (ph -> e-)
   ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;conversion to electrons
   imout=imout*qe_val  ; [e-]
 
-;stop
   ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ; Photon (electron) Noise
   ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1015,7 +1012,6 @@ if (info.dualbeam eq 1) then begin
 
       if (info.fpaphotnoi eq 'Generate') then begin
          imoutpre=imout
- ;        if (info.fpaphotnoi eq 1) then begin
          for lam=0,sizy[1]-1 do begin 
             for pol=0,sizy[2]-1 do begin
                if (poli eq -1) then begin

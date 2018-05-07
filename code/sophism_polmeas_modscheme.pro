@@ -101,10 +101,6 @@ nmcycl=info.cycrep
 ; number of time samples
 ntim=info.ntim
 
-; demodulation matrix
-;dmodm = fltarr(4, info.modnbuff)
-;dmodm2=dmodm
-
 ;matrix for changing sign of 'magnetic' stokes for dual-beam
 dualmat=fltarr(4,4)+1.
 for i=1,3 do dualmat[i,*]=-dualmat[i,*]
@@ -255,37 +251,6 @@ if info.modtype eq 'longit. ideal' then begin
 ;   print,'Not correctly implemented yet'
 ;   stop
 
-; demodulation function
-;   dmodf = {t: fltarr(ntim), f: fltarr(ntim, info.modnbuff)}
-;   dmodf.t = modf.t
-
-; modulation function
-;   modf.i = replicate(0.5, ntim)
-;   a = fltarr(nperiod)
-;   a[0:nperiod/2-1] = 0.5
-;   a[nperiod/2:nperiod-1] = -0.5
-;   b = 0.0
-;   for i=0,nmcycl-1 do b = [b, a]
-;   b = b[1:*]
-;   modf.(where(tag_names(modf) eq info.modspar)) = b
-
-; demodulation function
-;   a = fltarr(nperiod)
-;   a[0:nperiod/2-1] = 1
-;   a[nperiod/2:nperiod-1] = 0
-;   b = 0.0
-;   for i=0,nmcycl-1 do b = [b, a]
-;   b = b[1:*]
-;;dmodf.f[*,0] = b
-;;dmodf.f[*,1] = shift(b, nperiod/2)
-
-; demodulation matrix
-;   dmodm[0,*] = [1,1]
-;   case info.modspar of
-;      'Q': dmodm[1,*] = [1,-1]
-;      'U': dmodm[2,*] = [1,-1]
-;      'V': dmodm[3,*] = [1,-1]
-;   endcase
 
 ;case according to parameter to modulate
    case info.modspar of 
@@ -398,7 +363,7 @@ endif ;longit. ideal
 ; ------------------------------------------------------------------------------
 
 if info.modtype eq 'longit. real' then begin
-   print,'paso a paso, llegara pronto'
+   print,'step by step, will be coming soon'
    stop
 
 
@@ -801,7 +766,7 @@ if info.modtype eq 'vector. real' then begin
 
 
    endif ;vector. real
-stop
+;stop
 
 ; ------------------------------------------------------------------------------
 ; Finalize

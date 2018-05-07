@@ -88,16 +88,7 @@ for obs=0,info.obsset-1 do begin
    for ll=0,sizd(1)-1 do begin  ;info.etalpos-1 do begin 
       for ss=0,sizd(2)-1 do begin ;info.modnbuff-1 do begin
          img=reform(data[ll,ss,*,*])
-;)))))
-;crazy tests
-;img=rotate(img,3)
-;img[0:511,*]=0
-;img[*,0:511]=0
-;img[2047-512:2047,*]=0
-;img[*,2047-512:2047]=0
-;img=img[512:1535,512:1535]
-;img=img*(img gt 9e3)
-;((((
+
 ;***********************
 ;these lines below are needed for too small input data. Less than 128
 ;pixels seems not possible for compression 
@@ -124,10 +115,6 @@ for obs=0,info.obsset-1 do begin
 ;***********************
             siz=size(img,/dim)
          endif 
-;      if (info.modnbuff*ll+ss eq 3 OR info.modnbuff*ll+ss eq 15) then img=reform(data[ll+1,ss,*,*]) ;img/10.
-;stop
-;      img=img*(img gt 6e3)
-;stop
 
 ;define image range
 ;depending if there are negative values or not, use 0 for min or
@@ -538,16 +525,5 @@ spawn,'rm '+fileout+'_decomp*'
 endfor ;obs
 
 
-;stop
-;if (info.talk eq 1) then begin
-;   window,/free
-;   zer=where(img ne 0)
-;   diff=(float(uimg[zer])-float(img[zer]))/float(img[zer])
-;;   imgn=data[0,0,*,*]
-;;   zer=where(imgn ne 0)
-;;   diff=()
-;   h=histogram(diff,nbins=100,location=x)
-;   plot,psym=10,x,h,/xst,/yst,tit='Histogram of (decompressed image - 16bit orig image) / 16bit orig image'
-;endif
 
 end

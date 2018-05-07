@@ -91,10 +91,6 @@ if info.filtype eq 'Hinode' then begin
    w = where(abs(tpfilt.nu) ge info.filcuth, complement=wc)
    tpfilt[w].pow = exp(p[0]) * abs(tpfilt[w].nu)^p[1]
 ;stop
-;this below to use Johanns spectra of jittering
-;restore,'../data/ESA_jitter_spectrum_Johann.sav'
-;spectrum2=spectrum2>0
-;tpfilt.pow=interpol(spectrum2,f,abs(tpfilt.nu))
    tpfilt[wc].pow = 0.
 
 ;   w = where( (tpfilt.nu ne 0) and (abs(tpfilt.nu) ge p[2]) )

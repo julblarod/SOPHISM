@@ -203,8 +203,6 @@ if (info.numfil gt 1) then begin
 
 ;convert final data from idl-write to writefits with header
       sxaddpar,head,"TSAMP",format='(F8.3)',info.tsamp,'Time sampling (s)'
-;      sxaddpar,head,"MAGNIF",format='(F6.2)',info.sscene_mag,'Replication factor'
-;      if (info.fparesamp eq 1) then sxaddpar,head,"RESAMP",info.sssamp/info.fpaplate,'Resampling factor'
 
       for ni=0,n_elements(ninterp)-1 do begin
          datafin=fltarr(info.wavepoint,4,info.sz,info.sz)

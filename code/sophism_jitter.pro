@@ -138,20 +138,6 @@ if (info.talk eq 1) then print,'Frequency filtering with type '+info.filtype
 sophism_jitter_tpfilt
 restore, info.saves+info.files(progind)+'_ftpfilt.sav'
 
-;print,'reading Johanns Astrium amplitude spectrum'
-;print,'In tsamp=20 ms, 5 Hz empieza en indice 156'
-;lee=read_ascii('../data/sc_pdr_jitter_spectrum_interpolated.txt',data_st=8)
-;maxi=where(lee.field1(0,*) eq round(max(fjitt.nu)))
-;mimi=min(abs(fjitt.nu-lee.field1(0,0)),mini)
-;powop=fltarr(ntim/2+1)
-;powop(mini:*)=interpol(lee.field1(1,0:maxi),lee.field1(0,0:maxi),fjitt(mini:ntim/2).nu)
-;set to 0 everything over 100 Hz
-;powop(min(where(fjitt.nu ge 100)):*)=0.
-;powo=[powop,rotate(powop(1:ntim/2-1),2)]
-;info.filtype='Otro'
-;stop
-;for i=1,2 do fjitt.(i) = fjitt.(i) * powo
-
 for i=1,2 do fjitt.(i) = fjitt.(i) * sqrt(tpfilt.pow)
 
 ; ------------------------------------------------------------------------------
@@ -222,7 +208,6 @@ prg0=0.
 prg=prg0
 
 for nf=nstart,ntim-1 do begin
-;for nf=0,ntim-1 do begin
    ima=readfits(info.saves+info.files(progma)+'_'+strtrim(nf,2)+'.fits*',head,/comp,/sil)
    sizy=size(ima)
    imajitt=ima*0.

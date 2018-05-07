@@ -70,7 +70,6 @@ if (info.startmed eq 1 AND min(where(info.routines eq 1)) eq progind) then begin
    nstart=0
    head=headfits(info.saves+info.files(progma)+'_0.fits*')
    nlam=fix(sxpar(head,'NAXIS1'))
-stop
 endif else begin
 ;create the modulation scheme
    sophism_polmeas_modscheme
@@ -87,14 +86,7 @@ sizm=size(modmat)
 
 ; number of time samples in one state
 nstate=info.nstate 
-;times of LCVRs states change and number of samples 'lost' in the changes
-;tdeaths=[info.tdeath1,info.tdeath2,info.tdeath3,info.tdeath4]
-;ndeaths=round(tdeaths*1e-3/info.tsamp)
 
-; number of samples in one modulation period
-;nperiod=info.nperiod
-; number of cycles
-;nmcycl=info.cycrep
 ; number of samples in one observation run
 if (info.dataser eq 0) then ntim=1 else ntim=info.ntim
 
@@ -154,7 +146,7 @@ if (info.startmed eq 1 AND min(where(info.routines eq 1)) eq progind) then begin
          nout+=1 
       endelse
    endfor 
-stop
+;stop
    nstart0=info.nstart
    nout0=nout
    nstart=info.nstart+nout

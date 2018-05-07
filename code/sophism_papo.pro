@@ -112,7 +112,6 @@ for nf=nstart,ntim-1 do begin
             if (info.talk eq 1) then print,format='(52(%"\b"),"Integrating sample ",I5,", wavelength ",I3,", step ",I5,$)',nf+1,j+1,i+1
 ;convolution of image with OTF for the wavelength position and
 ;integration step
-;         im = reform(ima[i+wsteps[j],0,*,*])
             im = reform(ima[i+wsteps[j],ppp,*,*])
 ; apodization
             if (info.sscene_apod gt 0) then sophism_apo2d,im,info.sscene_apod
@@ -127,7 +126,6 @@ for nf=nstart,ntim-1 do begin
 
          ENDFOR ;int_range
 ; normalization
-;         lcc[j,0,*,*] = imc/norm[j]
          lcc[j,ppp,*,*] = imc/norm[j]
 
       ENDFOR ;scan pos
@@ -136,12 +134,10 @@ for nf=nstart,ntim-1 do begin
 ;now 'interpolate' to real selected wavelength position (if it was not
 ;sampled in input data)
    lccpre=lcc
-;   lcc=fltarr(npos,1,info.sz,info.sz) ;lcc*0.
    lcc=fltarr(npos,szp(2),info.sz,info.sz) ;lcc*0.
    mind=max(index)
    for ii=0,mind do begin
       indy=where(index eq ii,nindy)
-;      for bb=0,nindy-1 do lcc[ii,0,*,*]=lcc[ii,0,*,*]+(wg[indy(bb)]*lccpre[indy(bb),*,*,*])
       for bb=0,nindy-1 do lcc[ii,*,*,*]=lcc[ii,*,*,*]+(wg[indy(bb)]*lccpre[indy(bb),*,*,*])
    endfor 
 
@@ -193,7 +189,6 @@ if (info.dualbeam eq 1) then begin
                if (info.talk eq 1) then print,format='(57(%"\b"),"DUAL Integrating sample ",I5,", wavelength ",I3,", step ",I5,$)',nf+1,j+1,i+1
 ;convolution of image with OTF for the wavelength position and
 ;integration step
-;               im = reform(ima[i+wsteps[j],0,*,*])
                im = reform(ima[i+wsteps[j],ppp,*,*])
 ; apodization 
                if (info.sscene_apod gt 0) then sophism_apo2d,im,info.sscene_apod
@@ -206,7 +201,6 @@ if (info.dualbeam eq 1) then begin
 
             ENDFOR ;int_range
  ; normalization
-;         lcc[j,0,*,*] = imc/norm[j]
             lcc[j,ppp,*,*] = imc/norm[j]
 
          ENDFOR ;scan pos

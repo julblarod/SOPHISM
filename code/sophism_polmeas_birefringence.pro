@@ -35,7 +35,6 @@ if (info.birefloadmodel eq 1) then begin
    restore,info.saves+info.birefloadmodelnam ;'HREW_mueller_matrices.sav'
 endif else begin
 ;generate the look up tables used below
-;.r HREW_model_lt.pro before runing gem_mod_ret?
    ds_PtV = [0.02,0.04,0.06,0.08,0.10,0.12,0.14,0.16,0.18,0.20]
    dsnum=n_elements(ds_ptv)
 
@@ -47,7 +46,6 @@ endif else begin
    RMatrixB_T = fltarr(x_size/scale,y_size/scale,4,4,dsnum)
    
    for i=0,dsnum-1 do begin     ;n_elements(ds_PtV)-1 do begin    
-;      HREW_model_lt,CM,MMatrix,MMatrix_ideal,RMatrixB,ds_ptv=ds_ptv[i];,scale=scale,ds_PtV=ds_PtV[i];,/doplot ;,label='_test'
       sophism_polmeas_birefringence_model,CM,MMatrix,MMatrix_ideal,RMatrixB,ds_ptv=ds_ptv[i]
       RMatrixB_T(*,*,*,*,i) = RMatrixB
    endfor
@@ -80,14 +78,11 @@ if (PtV lt min(ds_ptv) or ptv gt max(ds_ptv)) then begin ;ds_ptv(howmany-1) then
    print,'Out of ps_ptv range ',ds_ptv
    print,'Assuming identity matrix'
    print,''
-;   return,Matrix_R
 ;   stop
    goto,elfin
 endif
 
 ;busco el mas cercano
-;below = min(where(ds_ptv le ds_ptv))
-;above = max(where(ds_ptv ge ds_ptv))
 below = max(where(ds_ptv le ptv))
 above = min(where(ds_ptv ge ptv))
 
@@ -124,7 +119,6 @@ endelse
 
 ;diagonal elements equal 1. Rest of elements are zero
 
-;return,Matrix_R
 elfin:
 save,filenam=info.saves+info.files(progind)+'_biref_mat.sav',matrix_r
 

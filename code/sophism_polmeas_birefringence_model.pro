@@ -1,8 +1,4 @@
-;esto primero deberia estar todo ya incluido
-;@lib_ejercicio
-;@lib_pmp_v1.1
 
-;pro HREW_model_lt,CM,MMatrix,MMatrix_ideal,RMatrixB,doplot=doplot,steps=steps,scale=scale,label=label,model=model,ds_PtV=ds_PtV
 pro sophism_polmeas_birefringence_model,CM,MMatrix,MMatrix_ideal,RMatrixB,ds_PtV=ds_PtV;,doplot=doplot,steps=steps,scale=scale,label=label,model=model,ds_PtV=ds_PtV
 
 ; ==============================================================================
@@ -41,8 +37,6 @@ progind=2
 
 if (max(info.progma) gt 0 AND min(where(info.routines eq 1)) eq progind) then progma=info.progma else progma=max(where(info.routines(0:progind-1) eq 1))
 if progma eq -1 then progma=0
-
-;HREW_model,CM,MMatrix,MMatrix_ideal,RMatrixB,scale=scale,ds_PtV=ds_PtV
 
 ;in this program what we want to do is to simulate the effects of the HREW onto the FDT
 ;ds_PtV Peak-To-Vallew defocus (in waves) to simulate the HREW
@@ -139,9 +133,6 @@ HREW2 = fltarr(HREW_size,HREW_size)
 ;We will assume a defocus term as the radial dependence (other posibilities can be used as well)
 ;Units of the defocus will be in waves: ds_PtV [waves]
 
-;  ds_PtV = 0.5    ;Defocus aberr. at the pupil edge (Peak-to-Valley)[waves]
-;if not(keyword_set(ds_PtV)) then ds_PtV = 0.25 ;default value
-
 dz = (-1.)*8.*ds_PtV*lambda*(telescope_f/telescope_D)^2  ;Telescope defoculs [mm]
 c4 = (-1.)*dz*(telescope_D/telescope_f)^2*!pi/8./sqrt(3.)/lambda ;coef.Zern.desenf.[rad]
 
@@ -193,26 +184,9 @@ sin2THETA = sin(2d0*theta*!dpi/180d0)
 xcc = image_size/2d0   ;camera px
 ycc = image_size/2d0
 
-;window,0,xsize=500,ysize=500
-;window,1,xsize=1000,ysize=600
-;wset,0
 
 ;st = 0
 for i=0,image_size-1. do begin ;,steps do begin
-;   wset,0
-;      device,set_graphics=3
-;      !p.multi=0
-;      loadct,0
-;      tvframe3,HREW
-;      colores
-;   A = FINDGEN(31) * (2d0*!DPI/30d0)
-;   ptx = rpupil_px_hrew*COS(A)+HREW_size/2d0
-;   pty = rpupil_px_hrew*SIN(A)+HREW_size/2d0
-;   plots,ptx,pty,color=3
-;   ptx = rpupil_px_hrew*COS(A)+HREW_size/2d0+corner
-;   pty = rpupil_px_hrew*SIN(A)+HREW_size/2d0+corner
-;   plots,ptx,pty,line=2,color=3
-;   loadct,0
 
    for j=0,image_size-1. do begin ;,steps do begin
 
@@ -220,15 +194,6 @@ for i=0,image_size-1. do begin ;,steps do begin
       yp = (j-ycc)*factor_scala*info.birefscale
       mask_sh = shift(mask,[xp,yp])
       
-;      if keyword_set(doplot) then begin
-;         device,set_graphics=6
-;         if st eq 1 then plots,ptx,pty
-;         ptx = rpupil_px_hrew*COS(A)+HREW_size/2.+xp
-;         pty = rpupil_px_hrew*SIN(A)+HREW_size/2.+yp
-;         plots,ptx,pty
-;         st = 1
-;         device,set_graphics=3
-;      endif
 ;stop      
       RMatrixB[i,j,3,3] = total(cosHREW*mask_sh) / total(mask_sh)
       RMatrixB[i,j,2,2] = total( (sin2THETA^2.+cos2THETA^2.*cosHREW)*mask_sh) / total(mask_sh)
@@ -241,19 +206,6 @@ for i=0,image_size-1. do begin ;,steps do begin
 
    endfor
 
-;   st = 0
-   
-;   if keyword_set(doplot) then begin
-;      wset,1
-;      loadct,4
-;      !p.multi=[0,3,2]
-;      tvframe3,RMatrixB[*,*,3,3]<1.>0.95,charsize=2
-;      tvframe3,RMatrixB[*,*,2,2]<1.>0.95,charsize=2
-;      tvframe3,RMatrixB[*,*,1,1]<1.>0.95,charsize=2
-;      tvframe3,RMatrixB[*,*,2,3],charsize=2
-;      tvframe3,RMatrixB[*,*,1,3],charsize=2
-;      tvframe3,RMatrixB[*,*,2,1],charsize=2
-;   endif
    
 endfor
 ;to leave space after the talk loop
@@ -291,10 +243,8 @@ ME=fltarr(image_size_or/info.birefscale,image_size_or/info.birefscale,4,4)
 for i=0./info.birefscale,image_size_or/info.birefscale-1. do begin
    for j=0./info.birefscale,image_size_or/info.birefscale-1. do begin
       for k=0,3 do begin
-;         LCVR1 = LCVR(double(info.retang1),ret1[k]) ;LCVR(0d0,ret1[k])
          lcvr1=device(amr=1.,pha=ret1[k],ang=double(info.retang1))
          MM = LCVR1##reform(RMatrixB[i,j,*,*])
-;         LCVR2 = LCVR(double(info.retang2),ret2[k]) ;LCVR(45d0,ret2[k])
          lcvr2=device(amr=1.,pha=ret2[k],ang=double(info.retang2))
          MM = LCVR2##MM
          MM = PL##MM
@@ -305,47 +255,12 @@ for i=0./info.birefscale,image_size_or/info.birefscale-1. do begin
    endfor
 ;   print,i
 endfor
-;save,filename='MATRIX_'+label+'.sav',MMatrix,MMatrix_ideal,RMatrixB,CM
 ;stop
 save,filenam=info.saves+info.files(progind)+'_biref_model.sav',hrew,MMatrix,MMatrix_ideal,RMatrixB,CM
 
 
 ;stop
 
-
-
-;if keyword_set(doplot) then begin
-;
-;setpscf,filename='HREW_'+label+'.ps'
-;   !p.multi=0
-;   tvframe3,hrew,title='HREW_',xtitle='Px',ytitle='Px',btitle='Retardance [degree]'
-;   colores
-;   A = FINDGEN(31) * (2.*!PI/30.)
-;   ptx = rpupil_px_hrew*COS(A)+HREW_size/2.
-;   pty = rpupil_px_hrew*SIN(A)+HREW_size/2.
-;   plots,ptx,pty,color=3
-;   ptx = rpupil_px_hrew*COS(A)+HREW_size/2.+corner
-;   pty = rpupil_px_hrew*SIN(A)+HREW_size/2.+corner
-;   plots,ptx,pty,line=2,color=3
-;   loadct,4
-;;endpscf
-;;setpscf,filename='Retarder_'+label+'.ps'
-;   !p.multi=[0,4,4]
-;   for i=0,3 do for j=0,3 do tvframe3,reform(RMatrixB(*,*,i,j))*100. ;,title='Matrix element [',text(i),',',text(j),']'
-;   endpscf
-;   setpscf,filename='crosstalk_'+label+'.ps'
-;   !p.multi=[0,4,4]
-;   for i=0,3 do for j=0,3 do tvframe3,reform(cm(*,*,i,j))*100. ;,title='Matrix element [',text(i),',',text(j),']'
-;   endpscf
-;   setpscf,filename='error_dm_'+label+'.ps'
-;   !p.multi=[0,4,4]
-;   for i=0,3 do for j=0,3 do tvframe3,reform(me(*,*,i,j)) ;,title='Matrix element [',text(i),',',text(j),']'
-;;endpscf
-;        
-;   mme=fltarr(4,4)
-;   for i=0,3 do for j=0,3 do mme[i,j] = mean(ME[*,*,i,j])
-;   
-;endif
 
 
 end
